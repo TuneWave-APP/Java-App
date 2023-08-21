@@ -1,0 +1,13 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Translation animation: Move from bottom to slightly above -->
+    <translate
+            android:fromYDelta="10%p"
+            android:toYDelta="0%p"
+            android:duration="2000" /> <!-- Adjust duration as needed -->
+
+    <!-- Alpha animation: Fade in from transparent to opaque -->
+    <alpha
+            android:fromAlpha="0.0"
+            android:toAlpha="1.0"
+            android:duration="4000" /> <!-- Adjust duration to match translation duration -->
+</set>
