@@ -10,7 +10,7 @@
             android:layout_width="116dp"
             android:layout_height="20dp"
             android:focusableInTouchMode="false"
-            android:text="End Time"
+            android:text="0:00"
             android:ems="10"
             android:id="@+id/PlayerEndTime"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
             android:layout_height="20dp"
             android:focusableInTouchMode="false"
             android:inputType="text"
-            android:text="Start Time"
+            android:text="0:00"
             android:ems="10"
             android:id="@+id/PlayerStartTime"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
@@ -72,11 +72,12 @@
             android:textSize="14sp" android:editable="false"/>
     <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:srcCompat="@drawable/group_1" android:id="@+id/PlayerPlayButton"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/playerplaybut"
+            android:id="@+id/PlayerPlayButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintVertical_bias="0.744"
+            app:layout_constraintVertical_bias="0.743"
             android:background="@null"/>
     <ImageView
             android:layout_width="180dp"
@@ -98,7 +99,7 @@
             android:layout_height="wrap_content" app:srcCompat="@drawable/playernextbut" android:id="@+id/PlayerNextBut"
             app:layout_constraintStart_toEndOf="@+id/PlayerPlayButton"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.163"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.105"
             app:layout_constraintVertical_bias="0.729"
             android:background="@null"/>
 
