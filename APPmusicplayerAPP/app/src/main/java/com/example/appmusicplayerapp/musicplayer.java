@@ -2,61 +2,60 @@ package com.example.appmusicplayerapp;
 
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Handler;
-import android.content.Intent;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.ArrayList;
+
+import java.util.LinkedList;
 
 public class musicplayer extends AppCompatActivity {
     MediaPlayer musicPlayer;
     SeekBar Duration;
     TextView Current;
     TextView End;
+    TextView Title;
+    TextView Artist;
+    ImageButton PlayButton;
+    ImageButton PrevButton;
+    ImageButton NextButton;
+    ImageView AlbumCover;
     boolean isSeeking;
     Handler handler = new Handler();
+    LinkedList<String[]> songList = new LinkedList<>();
     int currsongindex = 0;
-    String song[][] = {
-            {"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer)},
-            {"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone)}
-    };
-    List<MediaPlayer> mediaPlayerList = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_musicplayer);
 
+        PlayButton = findViewById(R.id.PlayerPlayButton);
+        PrevButton = findViewById(R.id.PlayerPrevBut);
+        NextButton = findViewById(R.id.PlayerNextBut);
+        Title = findViewById(R.id.PlayerSongTitle);
+        Artist = findViewById(R.id.PlayerSongArtist);
+        AlbumCover = findViewById(R.id.PlayerAlbumCover);
+
+        // Add songs to the linked list
+        songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer)});
+        songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone)});
+        songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer)});
 
         try {
-            ImageButton PlayButton = findViewById(R.id.PlayerPlayButton);
-            ImageButton PrevButton = findViewById(R.id.PlayerPrevBut);
-            ImageButton NextButton = findViewById(R.id.PlayerNextBut);
             Duration = findViewById(R.id.seekBar);
             Current = findViewById(R.id.PlayerStartTime);
             End = findViewById(R.id.PlayerEndTime);
             isSeeking = false;
             setupmusicplayer();
-            PlayButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (musicPlayer.isPlaying()) {
-                        musicPlayer.pause();
-                        PlayButton.setImageResource(R.drawable.playerplaybut);
-                    } else {
-                        musicPlayer.start();
-                        PlayButton.setImageResource(R.drawable.playerpausebut);
-                    }
-                }
-            });
 
+            setupPlayButtonListener();
+            setupPrevButtonListener();
+            setupNextButtonListener();
             setupSeekBarListener();
             updateUIComponents();
             handler.post(updateUIRunnable);
@@ -67,58 +66,59 @@ public class musicplayer extends AppCompatActivity {
     }
 
     void setupmusicplayer() {
-        if (mediaPlayerList.size() > currsongindex) {
-            musicPlayer = mediaPlayerList.get(currsongindex);
-        } else {
-            musicPlayer = new MediaPlayer();
-            musicPlayer.setAudioAttributes(
-                    new AudioAttributes.Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .setUsage(AudioAttributes.USAGE_MEDIA)
-                            .build()
-            );
-            Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + song[currsongindex][3]);
-            try {
-                musicPlayer.setDataSource(this, uri);
-                musicPlayer.prepare();
-                mediaPlayerList.add(musicPlayer); // Add to the list
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (musicPlayer != null) {
+            musicPlayer.release();
+        }
+
+        musicPlayer = new MediaPlayer();
+        musicPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + songList.get(currsongindex)[3]);
+        try {
+            musicPlayer.setDataSource(this, uri);
+            musicPlayer.prepare();
+            Title.setText(songList.get(currsongindex)[0]);
+            Artist.setText(songList.get(currsongindex)[1]);
+            AlbumCover.setImageResource(Integer.parseInt(songList.get(currsongindex)[2]));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         Duration.setMax(musicPlayer.getDuration());
         Duration.setProgress(musicPlayer.getCurrentPosition());
 
-        musicPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-
-        {
+        musicPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
-            public void onCompletion (MediaPlayer mediaPlayer){
+            public void onCompletion(MediaPlayer mediaPlayer) {
                 currsongindex++; // Proceed to the next song
-                if (currsongindex < song.length) {
+                if (currsongindex < songList.size()) {
                     setupmusicplayer(); // Set up the next song
                     musicPlayer.start(); // Start playing the next song
+                } else {
+                    PlayButton.setImageResource(R.drawable.playerplaybut);
                 }
             }
         });
 
-        if(musicPlayer !=null)
-
-        {
+        if (musicPlayer != null) {
             Duration.setMax(musicPlayer.getDuration());
             Duration.setProgress(musicPlayer.getCurrentPosition());
         }
     }
 
-
     Runnable updateUIRunnable = new Runnable() {
         @Override
         public void run() {
             updateUIComponents();
-            handler.postDelayed(this, 1000); // Update every second
+            handler.postDelayed(this, 1000);
         }
     };
+
     void updateUIComponents() {
         if (!isSeeking) {
             Duration.setProgress(musicPlayer.getCurrentPosition());
@@ -126,6 +126,57 @@ public class musicplayer extends AppCompatActivity {
         }
         End.setText(formatTime(musicPlayer.getDuration()));
     }
+
+    void setupPlayButtonListener() {
+        PlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (musicPlayer.isPlaying()) {
+                    musicPlayer.pause();
+                    PlayButton.setImageResource(R.drawable.playerplaybut);
+                } else {
+                    musicPlayer.start();
+                    PlayButton.setImageResource(R.drawable.playerpausebut);
+                }
+            }
+        });
+    }
+
+    void setupPrevButtonListener() {
+        PrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayButton.setImageResource(R.drawable.playerpausebut);
+                if (currsongindex > 0) {
+                    currsongindex--;
+                    setupmusicplayer();
+                    musicPlayer.start();
+                } else {
+                    setupmusicplayer();
+                    musicPlayer.start();
+                }
+            }
+        });
+    }
+
+    void setupNextButtonListener() {
+        NextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayButton.setImageResource(R.drawable.playerpausebut);
+                if (currsongindex < (songList.size()-1)) {
+                    currsongindex++;
+                    setupmusicplayer();
+                    musicPlayer.start();
+                } else {
+                    currsongindex = 0;
+                    setupmusicplayer();
+                    musicPlayer.start();
+                }
+            }
+        });
+    }
+
     void setupSeekBarListener() {
         Duration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -134,7 +185,6 @@ public class musicplayer extends AppCompatActivity {
                     isSeeking = true;
                     musicPlayer.seekTo(progress); // Update current position of the song
                     Current.setText(formatTime(progress)); // Update current time TextView
-
                 }
             }
 
@@ -145,10 +195,12 @@ public class musicplayer extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                isSeeking = false;
+                isSeeking = false
+                ;
             }
         });
     }
+
     private String formatTime(int milliseconds) {
         int seconds = (milliseconds / 1000) % 60;
         int minutes = (milliseconds / (1000 * 60)) % 60;
