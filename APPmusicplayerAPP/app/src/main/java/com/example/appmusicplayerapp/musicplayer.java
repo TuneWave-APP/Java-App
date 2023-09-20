@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Handler;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class musicplayer extends AppCompatActivity {
     MediaPlayer musicPlayer;
@@ -24,11 +25,16 @@ public class musicplayer extends AppCompatActivity {
     ImageButton PlayButton;
     ImageButton PrevButton;
     ImageButton NextButton;
+    ImageButton RepButton;
+    ImageButton LikeButton;
     ImageView AlbumCover;
     boolean isSeeking;
     Handler handler = new Handler();
     LinkedList<String[]> songList = new LinkedList<>();
+    Random rand = new Random();
     int currsongindex = 0;
+    int songListsize;
+    int repeat = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +43,8 @@ public class musicplayer extends AppCompatActivity {
         PlayButton = findViewById(R.id.PlayerPlayButton);
         PrevButton = findViewById(R.id.PlayerPrevBut);
         NextButton = findViewById(R.id.PlayerNextBut);
+        RepButton = findViewById(R.id.PlayerRepButton);
+        LikeButton = findViewById(R.id.PlayerLikeButton);
         Title = findViewById(R.id.PlayerSongTitle);
         Artist = findViewById(R.id.PlayerSongArtist);
         AlbumCover = findViewById(R.id.PlayerAlbumCover);
@@ -45,6 +53,7 @@ public class musicplayer extends AppCompatActivity {
         songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer)});
         songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone)});
         songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer)});
+        songListsize = songList.size();
 
         try {
             Duration = findViewById(R.id.seekBar);
@@ -54,6 +63,8 @@ public class musicplayer extends AppCompatActivity {
             setupmusicplayer();
 
             setupPlayButtonListener();
+            setupRepButtonListener();
+            setupLikeButtonListener();
             setupPrevButtonListener();
             setupNextButtonListener();
             setupSeekBarListener();
@@ -95,12 +106,20 @@ public class musicplayer extends AppCompatActivity {
         musicPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                currsongindex++; // Proceed to the next song
-                if (currsongindex < songList.size()) {
-                    setupmusicplayer(); // Set up the next song
-                    musicPlayer.start(); // Start playing the next song
+                if(repeat!=2)
+                    currsongindex++;
+                if (currsongindex < songListsize) {
+                    setupmusicplayer();
+                    musicPlayer.start();
                 } else {
-                    PlayButton.setImageResource(R.drawable.playerplaybut);
+                    if(repeat==1)
+                    {
+                        currsongindex = 0;
+                        setupmusicplayer();
+                        musicPlayer.start();
+                    }
+                    else
+                        PlayButton.setImageResource(R.drawable.playerplaybut);
                 }
             }
         });
@@ -142,20 +161,59 @@ public class musicplayer extends AppCompatActivity {
         });
     }
 
+    void setupRepButtonListener() {
+        RepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(repeat<2)
+                    repeat++;
+                else
+                    repeat=0;
+                switch(repeat)
+                {
+                    case 0: {
+                        RepButton.setImageResource(R.drawable.loop_inactive);
+                    } break;
+                    case 1: {
+                        RepButton.setImageResource(R.drawable.loop);
+                    } break;
+                    case 2: {
+                        RepButton.setImageResource(R.drawable.single_loop_1);
+                    } break;
+                }
+            }
+        });
+    }
+
+    void setupLikeButtonListener() {
+        LikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //To be filled
+            }
+        });
+    }
+
     void setupPrevButtonListener() {
         PrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PlayButton.setImageResource(R.drawable.playerpausebut);
                 if (currsongindex > 0) {
+                if(repeat!=2)
                     currsongindex--;
-                    setupmusicplayer();
-                    musicPlayer.start();
-                } else {
-                    setupmusicplayer();
-                    musicPlayer.start();
-                }
+                setupmusicplayer();
+                musicPlayer.start();
             }
+            else
+            {
+                if(repeat==1)
+                    currsongindex=songListsize-1;
+                setupmusicplayer();
+                musicPlayer.start();
+            }
+        }
         });
     }
 
@@ -164,14 +222,25 @@ public class musicplayer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PlayButton.setImageResource(R.drawable.playerpausebut);
-                if (currsongindex < (songList.size()-1)) {
-                    currsongindex++;
+                if (currsongindex < (songListsize - 1)) {
+                    if(repeat!=2)
+                        currsongindex++;
                     setupmusicplayer();
                     musicPlayer.start();
                 } else {
-                    currsongindex = 0;
-                    setupmusicplayer();
-                    musicPlayer.start();
+                    if(repeat==2) {
+                        setupmusicplayer();
+                        musicPlayer.start();
+                    }
+                    else{
+                        currsongindex = 0;
+                        setupmusicplayer();
+                        PlayButton.setImageResource(R.drawable.playerplaybut);
+                        if (repeat == 1) {
+                            PlayButton.setImageResource(R.drawable.playerpausebut);
+                            musicPlayer.start();
+                        }
+                    }
                 }
             }
         });
