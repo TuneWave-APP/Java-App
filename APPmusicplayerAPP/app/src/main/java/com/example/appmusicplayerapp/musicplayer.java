@@ -50,9 +50,9 @@ public class musicplayer extends AppCompatActivity {
         AlbumCover = findViewById(R.id.PlayerAlbumCover);
 
         // Add songs to the linked list
-        songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer)});
-        songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone)});
-        songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer)});
+        songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer), String.valueOf(false)});
+        songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone), String.valueOf(false)});
+        songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer), String.valueOf(false)});
         songListsize = songList.size();
 
         try {
@@ -70,6 +70,7 @@ public class musicplayer extends AppCompatActivity {
             setupSeekBarListener();
             updateUIComponents();
             handler.post(updateUIRunnable);
+            handler.post(updateLikeRunnable);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,6 +138,13 @@ public class musicplayer extends AppCompatActivity {
             handler.postDelayed(this, 1000);
         }
     };
+    Runnable updateLikeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            checkLikeButton(Boolean.parseBoolean(songList.get(currsongindex)[4]));
+            handler.postDelayed(this, 50);
+        }
+    };
 
     void updateUIComponents() {
         if (!isSeeking) {
@@ -190,9 +198,27 @@ public class musicplayer extends AppCompatActivity {
         LikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //To be filled
+                if(!Boolean.parseBoolean(songList.get(currsongindex)[4])){
+                    LikeButton.setImageResource(R.drawable.heart_fill_1);
+                    songList.get(currsongindex)[4] = String.valueOf(true);
+                }
+                else {
+                    LikeButton.setImageResource(R.drawable.heart_outline_1);
+                    songList.get(currsongindex)[4] = String.valueOf(false);
+                }
             }
         });
+    }
+
+    void checkLikeButton(boolean like)
+    {
+        if(like)
+        {
+            LikeButton.setImageResource(R.drawable.heart_fill_1);
+        }
+        else{
+            LikeButton.setImageResource(R.drawable.heart_outline_1);
+        }
     }
 
     void setupPrevButtonListener() {
