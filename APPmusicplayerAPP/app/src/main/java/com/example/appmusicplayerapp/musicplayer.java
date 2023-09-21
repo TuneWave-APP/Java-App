@@ -70,7 +70,6 @@ public class musicplayer extends AppCompatActivity {
             setupSeekBarListener();
             updateUIComponents();
             handler.post(updateUIRunnable);
-            handler.post(updateLikeRunnable);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,6 +95,7 @@ public class musicplayer extends AppCompatActivity {
             Title.setText(songList.get(currsongindex)[0]);
             Artist.setText(songList.get(currsongindex)[1]);
             AlbumCover.setImageResource(Integer.parseInt(songList.get(currsongindex)[2]));
+            checkLikeButton(Boolean.parseBoolean(songList.get(currsongindex)[4]));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,13 +136,6 @@ public class musicplayer extends AppCompatActivity {
         public void run() {
             updateUIComponents();
             handler.postDelayed(this, 1000);
-        }
-    };
-    Runnable updateLikeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            checkLikeButton(Boolean.parseBoolean(songList.get(currsongindex)[4]));
-            handler.postDelayed(this, 50);
         }
     };
 
