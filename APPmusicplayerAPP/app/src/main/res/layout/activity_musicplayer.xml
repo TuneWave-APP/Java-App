@@ -104,11 +104,11 @@
             android:background="@null"/>
     <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:srcCompat="@android:drawable/ic_menu_report_image"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/heart_outline_1"
             android:id="@+id/PlayerLikeButton"
             android:background="@null"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.922"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.833"
             app:layout_constraintVertical_bias="0.729" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/PlayerPrevBut"/>
     <ImageButton

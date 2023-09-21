@@ -50,9 +50,9 @@ public class musicplayer extends AppCompatActivity {
         AlbumCover = findViewById(R.id.PlayerAlbumCover);
 
         // Add songs to the linked list
-        songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer)});
-        songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone)});
-        songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer)});
+        songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer), String.valueOf(false)});
+        songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone), String.valueOf(false)});
+        songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer), String.valueOf(false)});
         songListsize = songList.size();
 
         try {
@@ -95,6 +95,7 @@ public class musicplayer extends AppCompatActivity {
             Title.setText(songList.get(currsongindex)[0]);
             Artist.setText(songList.get(currsongindex)[1]);
             AlbumCover.setImageResource(Integer.parseInt(songList.get(currsongindex)[2]));
+            checkLikeButton(Boolean.parseBoolean(songList.get(currsongindex)[4]));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,9 +191,27 @@ public class musicplayer extends AppCompatActivity {
         LikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //To be filled
+                if(!Boolean.parseBoolean(songList.get(currsongindex)[4])){
+                    LikeButton.setImageResource(R.drawable.heart_fill_1);
+                    songList.get(currsongindex)[4] = String.valueOf(true);
+                }
+                else {
+                    LikeButton.setImageResource(R.drawable.heart_outline_1);
+                    songList.get(currsongindex)[4] = String.valueOf(false);
+                }
             }
         });
+    }
+
+    void checkLikeButton(boolean like)
+    {
+        if(like)
+        {
+            LikeButton.setImageResource(R.drawable.heart_fill_1);
+        }
+        else{
+            LikeButton.setImageResource(R.drawable.heart_outline_1);
+        }
     }
 
     void setupPrevButtonListener() {
