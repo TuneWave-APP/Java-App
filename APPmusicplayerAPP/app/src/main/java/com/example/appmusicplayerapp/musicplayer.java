@@ -50,9 +50,9 @@ public class musicplayer extends AppCompatActivity {
         AlbumCover = findViewById(R.id.PlayerAlbumCover);
 
         // Add songs to the linked list
-        songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer), String.valueOf(false)});
-        songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone), String.valueOf(false)});
-        songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer), String.valueOf(false)});
+//        songList.add(new String[]{"Summer", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_summer), String.valueOf(false)});
+//        songList.add(new String[]{"Alone", "Marshmello", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.marshmello_alone), String.valueOf(false)});
+//        songList.add(new String[]{"Summer", "Calvin Harris", String.valueOf(R.drawable.tunewave_logo), String.valueOf(R.raw.calvin_harris_summer), String.valueOf(false)});
         songListsize = songList.size();
 
         try {
